@@ -1,0 +1,65 @@
+# create your Kivy layout in the kv language here
+
+BoxLayout:
+    orientation: 'horizontal'
+    BoxLayout:
+        orientation: 'vertical'
+        size_hint: (0.25, 1)
+        TextInput:
+            id: input_name
+            text: ''
+            multiline: False
+        Label:
+            text: 'Artist:'
+            font_size: 20
+            color: (1, 1, 1, 1)
+        TextInput:
+            id: input_artist
+            text: ''
+            multiline: False
+        Label:
+            text: 'Year:'
+            font_size: 20
+            color: (1, 1, 1, 1)
+        TextInput:
+            id: input_year
+            text: ''
+            multiline: False
+        Button:
+            text: 'Add Song'
+            font_size: 20
+            color: (1, 1, 1, 1)
+            on_release: app.add_song_to_list(input_name.text, input_artist.text, input_year.text)
+        Button:
+            text: 'Clear'
+            font_size: 20
+            color: (1, 1, 1, 1)
+            on_release: app.clear_new_song_fields()
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (1, 0.15)
+            Label:
+                id: to_learn_songs
+                text: ''
+                font_size: 20
+                color: (1, 1, 1, 1)
+            Label:
+                id: learned_songs
+                text: ''
+                font_size: 20
+                color: (1, 1, 1, 1)
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                orientation: 'vertical'
+                id: songs_list_box
+                cols: 1
+                orientation: 'vertical'
+            Label:
+                id: learning_info
+                text: ''
+                font_size: 20
+                color: (1, 1, 1, 1)
+                size_hint: (1, 0.15)
