@@ -33,25 +33,115 @@ class SongLearnApp(App):
 
         MySongList.sort_songs_by_year()
 
-        #To do: sort songs by title, year and artist
+        for i, song in enumerate(MySongList.list_of_songs):
+            new_song_button = Button(text="\"{}\" by {} ({})".format(song.name, song.artist, song.year), id=str(i),
+                                     on_release=self.learn_this_song)
+            if song.learned:
+                new_song_button.text += " (learned)"
+                new_song_button.background_color = (1, 0, 0, 1)
+            else:
+                new_song_button.background_color = (0, 0, 1, 1)
 
-    def add_song_to_list(self, name, artist, year):
-        # To do: allow user to add song, validate the input and make sure all fields are entered
+            self.root.ids.songs_list_box.add_widget(new_song_button)
 
+        self.root.ids.learned_songs.text = "Learned: {}".format(MySongList.get_number_of_songs_learned())
+        self.root.ids.to_learn_songs.text = "To Learn: {}".format(len(MySongList.list_of_songs)
+                                                        - MySongList.get_number_of_songs_learned())
 
+        return self.root
 
-    def resort_order_of_song(self):
-        #resetting the order after adding the song
+    def add_song_to_list(self, name, artist, year): #validating the input of the user
+        if not name.isspace() and not artist.isspace() and not year.isspace():
+            if not name == "" and not artist == "" and not year == "":
+                if year.isdigit():
+                    if 1000 <= int(year) <= 9999:
+                        new_song = Song(name, artist, year)
+                        MySongList.add_song(new_song)
 
+                        if self.root.ids.sort_label.text == "Title":
+                            MySongList.sort_songs_by_title()
+                        elif self.root.ids.sort_label.text == "Artist":
+                            MySongList.sort_songs_by_artist()
+                        elif self.root.ids.sort_label.text == "Year":
+                            MySongList.sort_songs_by_year()
 
-    def learn_this_song(self, instance):
-        #displaying that you have already learned the song if the user selects the learned song to learn it again
+                        self.root.ids.songs_list_box.clear_widgets()
 
+                        for i, song in enumerate(MySongList.list_of_songs):
+                            new_song_button = Button(text="\"{}\" by {} ({})".format(song.name, song.artist, song.year),
+                                                     id=str(i), on_release=self.learn_this_song)
+                            if song.learned:
+                                new_song_button.text += " (learned)"
+                                new_song_button.background_color = (1, 0, 0, 1)
+                            else:
+                                new_song_button.background_color = (0, 0, 1, 1)
+                            self.root.ids.songs_list_box.add_widget(new_song_button)
 
+                        MySongList.save_song_list("songs.csv")
 
-    def clear_new_song_fields(self):
-        # clearing the fields
+                        self.root.ids.learned_songs.text = "Learned: {}".format(MySongList.get_number_of_songs_learned())
+                        self.root.ids.to_learn_songs.text = "To Learn: {}".format(len(MySongList.list_of_songs)
+                                                                        - MySongList.get_number_of_songs_learned())
+                    else:
+                        self.root.ids.learning_info.text = "Year should be between 1000 and 9999."
+                else:
+                    self.root.ids.learning_info.text = "Please enter a valid number."
+            else:
+                self.root.ids.learning_info.text = "All fields must be completed."
+        else:
+            self.root.ids.learning_info.text = "All fields must be completed."
 
+        self.root.ids.input_name.text = "" #resetting the values of the fields after identifying the error
+        self.root.ids.input_artist.text = ""
+        self.root.ids.input_year.text = ""
+
+    def resort_order_of_song(self): #resetting the order after adding the song
+        if self.root.ids.sort_label.text == "Year":
+            self.root.ids.sort_label.text = "Title"
+            MySongList.sort_songs_by_title()
+        elif self.root.ids.sort_label.text == "Title":
+            self.root.ids.sort_label.text = "Artist"
+            MySongList.sort_songs_by_artist()
+        elif self.root.ids.sort_label.text == "Artist":
+            self.root.ids.sort_label.text = "Year"
+            MySongList.sort_songs_by_year()
+
+        self.root.ids.songs_list_box.clear_widgets()
+
+        for i, song in enumerate(MySongList.list_of_songs):
+            new_song_button = Button(text="\"{}\" by {} ({})".format(song.name, song.artist, song.year), id=str(i),
+                                     on_release=self.learn_this_song)
+            if song.learned:
+                new_song_button.text += " (learned)"
+                new_song_button.background_color = (1, 0, 0, 1)
+            else:
+                new_song_button.background_color = (0, 0, 1, 1)
+            self.root.ids.songs_list_box.add_widget(new_song_button)
+
+    def learn_this_song(self, instance): #displaying that you have already learned the song if the user selects the learned song to learn it again
+        if MySongList.list_of_songs[int(instance.id)].learn():
+            instance.background_color = (1, 0, 0, 1)
+            instance.text += " (learned)"
+            self.root.ids.learning_info.text = "You have learned \"{}\" by {} ({})" \
+                                               ".".format(MySongList.list_of_songs[int(instance.id)].name,
+                                                          MySongList.list_of_songs[int(instance.id)].artist,
+                                                          MySongList.list_of_songs[int(instance.id)].year)
+        else:
+            self.root.ids.learning_info.text = "You have already learned \"{}\" by {} ({})" \
+                                               ".".format(MySongList.list_of_songs[int(instance.id)].name,
+                                                          MySongList.list_of_songs[int(instance.id)].artist,
+                                                          MySongList.list_of_songs[int(instance.id)].year)
+
+        self.root.ids.learned_songs.text = "Learned: {}".format(MySongList.get_number_of_songs_learned())
+        self.root.ids.to_learn_songs.text = "To Learn: {}".format(len(MySongList.list_of_songs)
+                                                        - MySongList.get_number_of_songs_learned())
+
+        MySongList.save_song_list("songs.csv") # saving the song to the file
+
+    def clear_new_song_fields(self): # clearing the fields
+        self.root.ids.input_name.text = ""
+        self.root.ids.input_artist.text = ""
+        self.root.ids.input_year.text = ""
 
 
 SongLearnApp().run()
