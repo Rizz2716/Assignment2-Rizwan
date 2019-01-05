@@ -1,4 +1,4 @@
-# createSongList class in this file
+# create your SongList class in this file
 
 from song import Song
 

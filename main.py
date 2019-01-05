@@ -5,7 +5,7 @@ Brief Project Description: The program reads the songs from the songs file and i
 unlearned songs. The user gets the opportunity to add new songs and he also gets the opportunity to sort the song display
 according to the artist or the year or the title. It displays the number of learned and unlearned songs and changes colour
 according to whether it is learned or unlearned.
-GitHub URL:
+GitHub URL: https://github.com/Rizz2716/Assignment2-Rizwan
 """
 
 from kivy.app import App
