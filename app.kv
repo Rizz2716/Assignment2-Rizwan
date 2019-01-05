@@ -5,7 +5,24 @@ BoxLayout:
     BoxLayout:
         orientation: 'vertical'
         size_hint: (0.25, 1)
-
+        Label:
+            text: 'Sort by:'
+            font_size: 20
+            color: (1, 1, 1, 1)
+        Button:
+            id: sort_label
+            text: 'Year'
+            font_size: 20
+            color: (1, 1, 1, 1)
+            on_release: app.resort_order_of_song()
+        Label:
+            text: 'Add New Song...'
+            font_size: 20
+            color: (1, 1, 1, 1)
+        Label:
+            text: 'Title:'
+            font_size: 20
+            color: (1, 1, 1, 1)
         TextInput:
             id: input_name
             text: ''
